@@ -1,3 +1,4 @@
+print("Importing")
 import time
 import psycopg2
 import os
@@ -19,8 +20,8 @@ from user_agent import generate_user_agent
 DB_PARAMS = {
     "dbname": "football_db",
     "user": "football_admin",
-    "password": "f00tB@!!@DM",
-    "host": "0.0.0.0",
+    "password": "f00tballAdmin",
+    "host": "database",
     "port": "5432"
 }
 
@@ -105,6 +106,7 @@ def create_table():
             cur.execute(query)
             conn.commit()
     print("✅ Database table is ready.")
+
 def insert_into_db(reader, league_name):
     """Insert or update records in PostgreSQL."""
     query = """
@@ -119,7 +121,32 @@ def insert_into_db(reader, league_name):
         home_red_cards, away_red_cards,
         last_updated
     ) VALUES (
-         %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,NOW()
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         %s,
+         NOW()
     )
     ON CONFLICT (match_date, home_team, away_team, league) DO UPDATE SET
         full_time_home_goals = EXCLUDED.full_time_home_goals,
@@ -139,7 +166,7 @@ def insert_into_db(reader, league_name):
                     if len(date_parts) == 3:
                         match_date = datetime.datetime.strptime(row["Date"], "%d/%m/%y").strftime('%Y-%m-%d')
                     else:
-                        continue  
+                        continue
                 except ValueError:
                     continue  
 
@@ -170,18 +197,17 @@ def insert_into_db(reader, league_name):
                     data.append(value)
 
                 # Debugging print statement to check data length and values
-                print(f"Data Length: {len(data)} / Expected: 26")
-                print(f"Data Values: {data}")
+                # print(f"Data Length: {len(data)} / Expected: 25")
+                # print(f"Data Values: {data}")
 
-                if len(data) != 26:
+                if len(data) != 25:
                     print("❌ Error: Data length mismatch, skipping row.")
                     continue
 
                 cur.execute(query, data)
-                break
-
+                print(f"✅ {league_name} database updated.")
+                # break
             conn.commit()
-    print(f"✅ {league_name} database updated.")
 
 
 def fetch_league_links(league):
@@ -204,54 +230,47 @@ def download_and_store_data(league):
             data = raw_data.decode(detected_encoding)
             reader = csv.DictReader(data.splitlines())
             insert_into_db(reader, league["name"])
+print("Starting")
+def check_data_in_table():
+    """Check if there is already data in the football_matches table."""
+    try:
+        # Establishing the connection to the database
+        conn = psycopg2.connect(**DB_PARAMS)
+        cur = conn.cursor()
 
-create_table()
-for league in LEAGUES:
-    fetch_league_links(league)
-    download_and_store_data(league)
+        # Query to check if there is any data in the football_matches table
+        query = "SELECT COUNT(*) FROM football_matches;"
+        cur.execute(query)
+
+        # Fetch the result
+        count = cur.fetchone()[0]
+        
+        if count > 0:
+            print(f"✅ There are {count} rows in the football_matches table.")
+        else:
+            main()
+            print("❌ The football_matches table is empty.")
+
+        # Close the connection
+        cur.close()
+        conn.close()
+
+    except psycopg2.Error as e:
+        print(f"Error: Unable to connect to the database. {e}")
 
 
-# # Database connection details from environment variables
-# DATABASE_URL = os.getenv("DATABASE_URL")
+def main():
+    for league in LEAGUES:
+        fetch_league_links(league)
+        download_and_store_data(league)
 
-# def wait_for_postgres():
-#     """Wait until PostgreSQL is ready before starting the scheduler."""
-#     while True:
-#         try:
-#             conn = psycopg2.connect(DATABASE_URL)
-#             conn.close()
-#             print("✅ PostgreSQL is ready! Starting the scheduler...")
-#             break
-#         except psycopg2.OperationalError:
-#             print("⏳ Waiting for PostgreSQL to be ready...")
-#             time.sleep(5)
-
-# def scrape_and_store_data():
-#     """Scrapes data and saves it to the PostgreSQL database."""
-#     print("🚀 Scraping data...")
-#     scraped_data = "sample_data_" + str(time.time())  # Simulated scraped data
-
-#     try:
-#         conn = psycopg2.connect(DATABASE_URL)
-#         cursor = conn.cursor()
-#         cursor.execute("INSERT INTO scraped_data (data) VALUES (%s);", (scraped_data,))
-#         conn.commit()
-#         cursor.close()
-#         conn.close()
-#         print("✅ Data stored successfully!")
-#     except Exception as e:
-#         print(f"❌ Error storing data: {e}")
-
-# if __name__ == "__main__":
-#     # Ensure PostgreSQL is ready before scheduling tasks
-#     wait_for_postgres()
-
-#     # Schedule the task to run daily at midnight (00:00)
-#     schedule.every().day.at("00:00").do(scrape_and_store_data)
-
-#     print("📅 Scheduler started. Waiting for the next execution...")
-
-#     # Run the scheduler indefinitely
-#     while True:
-#         schedule.run_pending()
-#         time.sleep(60)  # Check every minute if the task should run
+if __name__ == "__main__":
+    create_table()
+    check_data_in_table()
+    
+    schedule.every().day.at("00:00").do(main)
+    
+    print("📅 Scheduler started. Waiting for the next execution...")
+    while True:
+        schedule.run_pending()
+        time.sleep(60)

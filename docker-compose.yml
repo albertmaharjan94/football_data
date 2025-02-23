@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     shm_size: 1g
     ports:
-      - 15432:5432
+      - 5432:5432
     env_file:
       - .env
     networks:
@@ -36,6 +36,15 @@ services:
       - postgres-network
     volumes:
       - pgadmin-data:/var/lib/pgadmin/
+
+  scraper:
+    build: ./schedule_scrape
+    container_name: football_scraper
+    restart: always
+    networks:
+      - postgres-network
+    depends_on:
+      - database
 
 networks: 
   postgres-network:
