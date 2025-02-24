@@ -45,6 +45,7 @@ This will scrape the data daily at 12:00, if your machine and docker containers 
 
 ## Configuration Settings
 There are few configuration changes
+
 Host: 
 ```copy
 localhost
