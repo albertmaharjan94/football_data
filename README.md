@@ -80,14 +80,17 @@ pgF00tB@!!AdM!nn
 Add the Server
 
 <img width="595" alt="Screenshot 2025-02-24 at 2 57 30 PM" src="https://github.com/user-attachments/assets/67255282-f58f-4928-96bc-f74815d9625e" />
+
 ---
 Register a Server
 
 <img width="691" alt="Screenshot 2025-02-24 at 2 58 03 PM" src="https://github.com/user-attachments/assets/8899c16c-09d6-49f4-8991-96f4420d587a" />
+
 ---
 On Connection
 
 <img width="691" alt="Screenshot 2025-02-24 at 2 59 41 PM" src="https://github.com/user-attachments/assets/fbddff4d-6c68-43e6-a485-373278c8e319" />
+
 ---
 Host: 
 ```copy
