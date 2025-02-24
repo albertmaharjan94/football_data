@@ -34,12 +34,16 @@ Open your terminal and execute the following commands:
 
 ```bash
 git clone https://github.com/albertmaharjan94/football_data
+```
+
+## Building and Running the Containers
+```bash
 cd football_data
 docker compose up -d --build
 ```
-
 This will scrape the data daily at 12:00, if your machine and docker containers are up, it will automatically scrape the data.
 
+## Configuration Settings
 There are few configuration changes
 Host: 
 ```copy
@@ -63,6 +67,9 @@ footBallIreAD
 ```
 Note: Go through the init.sql for more information about users
 ---
+
+## Accessing the Database
+
 You can also check your database using the following URL:
 ```copy
 http://localhost:15433
@@ -77,6 +84,8 @@ Password:
 pgF00tB@!!AdM!nn
 ```
 ---
+## Adding and Registering a Server
+
 Add the Server
 
 <img width="595" alt="Screenshot 2025-02-24 at 2 57 30 PM" src="https://github.com/user-attachments/assets/67255282-f58f-4928-96bc-f74815d9625e" />
@@ -92,6 +101,9 @@ On Connection
 <img width="691" alt="Screenshot 2025-02-24 at 2 59 41 PM" src="https://github.com/user-attachments/assets/fbddff4d-6c68-43e6-a485-373278c8e319" />
 
 ---
+
+## On Connection Details
+
 Host: 
 ```copy
 database
@@ -113,6 +125,5 @@ Password:
 footBallIreAD
 ```
 
-
-
-
+## Conclusion
+You now have the Football Data project up and running on your local machine. The system is configured to automatically scrape data daily at 12:00, provided your Docker containers are active. For further customization or troubleshooting, refer to the documentation within the repository and the configuration files provided.
